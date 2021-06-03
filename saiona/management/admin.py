@@ -28,8 +28,8 @@ class Order_admin(admin.ModelAdmin):
     exclude = ('orders_product_cost','orders_product_selling')
 
     list_display = ('pk','order_quantity',
-                        'order_product','orders_product_cost',
-                         'orders_product_selling', 'client','purchase_date')
+                        'order_product','order_product_cost',
+                         'order_product_selling', 'client','purchase_date')
 
 admin.site.register(Client_type,Client_type_admin)
 admin.site.register(Clients,Clients_admin)

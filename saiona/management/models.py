@@ -73,18 +73,20 @@ class Order(models.Model):
     order_product = models.ForeignKey(Product,
                                     on_delete=models.DO_NOTHING,
                                     limit_choices_to={'product_status':True})
-    orders_product_cost = models.FloatField(_('product_cost'),help_text='Product cost on total order quantity',
+    order_product_cost = models.FloatField(_('product_cost'),help_text='Product cost on total order quantity',
                                                 blank=True,null=True)
-    orders_product_selling = models.FloatField(_('product_selling'),help_text='Product selling price on totak order quantity', 
+    order_product_selling = models.FloatField(_('product_selling'),help_text='Product selling price on totak order quantity', 
                                                 blank=True,null=True)
-    orders_by_client = models.ForeignKey(Clients,name='client', on_delete=models.DO_NOTHING)
+    order_by_client = models.ForeignKey(Clients,name='client', on_delete=models.DO_NOTHING)
     date_of_purchase = models.DateTimeField(name='purchase_date',default=timezone.now)
+    tax = models.FloatField('Tax percentage')
+    order_taxed_amount = models.FloatField(_('taxed_amount'),blank=True,null=True)
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.orders_product_cost = self.order_product.product_total_cost * self.order_quantity
-            self.orders_product_selling = self.order_product.product_selling_cost * self.order_quantity
-            
+            self.order_product_cost = self.order_product.product_total_cost * self.order_quantity
+            self.order_product_selling = self.order_product.product_selling_cost * self.order_quantity
+            self.order_taxed_amount = self.order_product_selling + (self.tax * self.order_product_selling / 100)
             super(Order, self).save(*args, **kwargs)
 
     def __str__(self):
