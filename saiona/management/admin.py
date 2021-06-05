@@ -33,7 +33,7 @@ class Order_admin(admin.ModelAdmin):
 
 
 class Payments_admin(admin.ModelAdmin):
-    list_display = ('client','amount_paid')
+    list_display = ('client','amount_paid','note')
 
 admin.site.register(Client_type,Client_type_admin)
 admin.site.register(Clients,Clients_admin)
