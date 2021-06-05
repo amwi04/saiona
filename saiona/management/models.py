@@ -56,7 +56,7 @@ class Product(models.Model):
     def save(self,*args, **kwargs):
         if not self.product_pack_cost:
             self.product_total_cost = self.product_cost + self.product_transport_cost + self.product_pack_cost
-            
+
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -111,7 +111,8 @@ class Payments(models.Model):
     note = models.TextField(_('Note'),blank=True,null=True)
 
     def save(self,*args, **kwargs):
-        self.client.balance -= self.amount_paid
-        self.client.save()
+        if not self.amount_paid:
+            self.client.balance -= self.amount_paid
+            self.client.save()
         super(Payments, self).save(*args, **kwargs)
 
