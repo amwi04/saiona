@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 # Create your models here.
@@ -53,7 +54,9 @@ class Product(models.Model):
     product_status = models.BooleanField(_('Status'),help_text='If product with batch is still in sell 1 YES 0 NO')
 
     def save(self,*args, **kwargs):
-        self.product_total_cost = self.product_cost + self.product_transport_cost + self.product_pack_cost
+        if not self.product_pack_cost:
+            self.product_total_cost = self.product_cost + self.product_transport_cost + self.product_pack_cost
+            
         super(Product, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -105,6 +108,7 @@ class Order(models.Model):
 class Payments(models.Model):
     client = models.ForeignKey(Clients,on_delete=models.DO_NOTHING)
     amount_paid = models.FloatField(_('amount_paid'))
+    note = models.TextField(_('Note'),blank=True,null=True)
 
     def save(self,*args, **kwargs):
         self.client.balance -= self.amount_paid
